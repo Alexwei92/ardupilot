@@ -113,6 +113,7 @@ enum control_mode_t {
     SMART_RTL =    21,  // SMART_RTL returns to home by retracing its steps
     FLOWHOLD  =    22,  // FLOWHOLD holds position with optical flow without rangefinder
     FOLLOW    =    23,  // follow attempts to follow another vehicle or ground station
+    SYS_ID =       24,  // for system identification experiment
 };
 
 enum mode_reason_t {
