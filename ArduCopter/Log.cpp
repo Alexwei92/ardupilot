@@ -486,6 +486,38 @@ void Copter::Log_Write_GuidedTarget(uint8_t target_type, const Vector3f& pos_tar
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
 
+
+struct PACKED log_ONR {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    uint32_t rpm1;
+    uint32_t rpm2;
+    uint32_t rpm3;
+    uint32_t rpm4;
+    uint32_t rpm5;
+    uint32_t rpm6;
+    uint32_t rpm7;
+    uint32_t rpm8;
+};
+
+
+void Copter::Log_Write_ONR()
+{
+    struct log_ONR pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_ONR_MSG),
+        time_us    : AP_HAL::micros64(),
+        rpm1       : 1,
+        rpm2       : 2,
+        rpm3       : 3,
+        rpm4       : 4,
+        rpm5       : 5,
+        rpm6       : 6,
+        rpm7       : 7,
+        rpm8       : 8,
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+
 // type and unit information can be found in
 // libraries/DataFlash/Logstructure.h; search for "log_Units" for
 // units and "Format characters" for field type information
@@ -531,6 +563,8 @@ const struct LogStructure Copter::log_structure[] = {
 #endif
     { LOG_GUIDEDTARGET_MSG, sizeof(log_GuidedTarget),
       "GUID",  "QBffffff",    "TimeUS,Type,pX,pY,pZ,vX,vY,vZ", "s-mmmnnn", "F-000000" },
+    { LOG_ONR_MSG, sizeof(log_ONR), 
+      "ONR", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
 };
 
 void Copter::Log_Write_Vehicle_Startup_Messages()
