@@ -563,8 +563,10 @@ const struct LogStructure Copter::log_structure[] = {
 #endif
     { LOG_GUIDEDTARGET_MSG, sizeof(log_GuidedTarget),
       "GUID",  "QBffffff",    "TimeUS,Type,pX,pY,pZ,vX,vY,vZ", "s-mmmnnn", "F-000000" },
+#if ONR_DATAFLASH == ENABLED
     { LOG_ONR_MSG, sizeof(log_ONR), 
       "ONR", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
+#endif     
 };
 
 void Copter::Log_Write_Vehicle_Startup_Messages()

@@ -68,3 +68,4 @@
 //#define USERHOOK_AUXSWITCH ENABLED                        // for code to handle user aux switches
 
 #define SIM_ONR ENABLED
+#define ONR_DATAFLASH DISABLED
