@@ -767,8 +767,11 @@ private:
     void send_nav_controller_output(mavlink_channel_t chan);
     void send_rpm(mavlink_channel_t chan);
     void send_pid_tuning(mavlink_channel_t chan);
+    void send_onr_rpm(mavlink_channel_t chan);
+    void send_onr_power(mavlink_channel_t chan);
     void gcs_data_stream_send(void);
     void gcs_check_input(void);
+
 
     // heli.cpp
     void heli_init();

@@ -83,6 +83,8 @@ enum ap_message : uint8_t {
     MSG_LANDING,
     MSG_ESC_TELEMETRY,
     MSG_NAMED_FLOAT,
+    MSG_ONR_RPM,
+    MSG_ONR_POW,
     MSG_LAST // MSG_LAST must be the last entry in this enum
 };
 

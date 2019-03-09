@@ -252,6 +252,40 @@ void Copter::send_pid_tuning(mavlink_channel_t chan)
     }
 }
 
+/*
+  send ONR-RPM packet
+ */
+void NOINLINE Copter::send_onr_rpm(mavlink_channel_t chan)
+{
+    mavlink_msg_onr_rpm_sensor_send(
+        chan,
+        1,  //rpm1
+        2,  //rpm2
+        3,  //rpm3
+        4,  //rpm4
+        5,  //rpm5
+        6,  //rpm6
+        7,  //rpm7
+        8); //rpm8
+}
+
+/*
+  send ONR-POWER packet
+ */
+void NOINLINE Copter::send_onr_power(mavlink_channel_t chan)
+{
+    mavlink_msg_onr_power_sensor_send(
+        chan,
+        11,
+        12,  //battery_temperature
+        13,  //battery_voltage
+        14,  //battery_current
+        15,  //bec_voltage
+        16,  //bec_current
+        17,
+        18);
+}
+
 uint8_t GCS_MAVLINK_Copter::sysid_my_gcs() const
 {
     return copter.g.sysid_my_gcs;
@@ -359,6 +393,20 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
 #if ADSB_ENABLED == ENABLED
         CHECK_PAYLOAD_SIZE(ADSB_VEHICLE);
         copter.adsb.send_adsb_vehicle(chan);
+#endif
+        break;
+
+    case MSG_ONR_RPM:
+#if SIM_ONR == ENABLED
+        CHECK_PAYLOAD_SIZE(ONR_RPM_SENSOR);
+        copter.send_onr_rpm(chan);
+#endif
+        break;
+
+    case MSG_ONR_POW:
+#if SIM_ONR == ENABLED
+        CHECK_PAYLOAD_SIZE(ONR_POWER_SENSOR);
+        copter.send_onr_power(chan);
 #endif
         break;
 
@@ -516,6 +564,8 @@ static const ap_message STREAM_EXTRA3_msgs[] = {
     MSG_VIBRATION,
     MSG_RPM,
     MSG_ESC_TELEMETRY,
+    MSG_ONR_RPM,
+    MSG_ONR_POW,
 };
 static const ap_message STREAM_ADSB_msgs[] = {
     MSG_ADSB_VEHICLE
