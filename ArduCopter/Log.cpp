@@ -486,7 +486,7 @@ void Copter::Log_Write_GuidedTarget(uint8_t target_type, const Vector3f& pos_tar
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
 
-
+// ONR sensor logging
 struct PACKED log_ONR {
     LOG_PACKET_HEADER;
     uint64_t time_us;
@@ -500,7 +500,7 @@ struct PACKED log_ONR {
     uint32_t rpm8;
 };
 
-
+// Write an ONR sensor packet
 void Copter::Log_Write_ONR()
 {
     struct log_ONR pkt = {
@@ -517,6 +517,85 @@ void Copter::Log_Write_ONR()
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
+
+// mixer input logging
+struct PACKED log_Mixerin {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    float roll_in;
+    float pitch_in;
+    float yaw_in;
+    float throttle_in;
+};
+
+// Write a mixer input packet
+void Copter::Log_Write_Mixerin()
+{
+    struct log_Mixerin pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_MIXERIN_MSG),
+        time_us        : AP_HAL::micros64(),
+        roll_in        : motors->get_roll(),
+        pitch_in       : motors->get_pitch(),
+        yaw_in         : motors->get_yaw(),
+        throttle_in    : motors->get_throttle(),
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+
+// 12 states logging
+struct PACKED log_States {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    float ax;
+    float ay;
+    float az;
+    float tmp1;
+    float tmp2;
+    float tmp3;
+    float p;
+    float q;
+    float r;
+    int16_t roll;
+    int16_t pitch;
+    uint16_t yaw;
+    float N;
+    float E;
+    float D;
+};
+
+// Write 12 states packet
+void Copter::Log_Write_States()
+{
+    Vector2f posNE;
+    Vector3f accelNED;
+    float posD;
+    float azbias;
+    ahrs.get_NavEKF2().getAccelZBias(-1,azbias);
+    ahrs.get_NavEKF2().getAccelNED(accelNED);
+    const AP_InertialSensor &ins = AP::ins();
+    const Vector3f &accel = ins.get_accel(ahrs.get_primary_accel_index());
+    struct log_States pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_STATES_MSG),
+        time_us     : AP_HAL::micros64(),
+        ax          : ahrs.get_accel_ef_blended().x,
+        ay          : ahrs.get_accel_ef_blended().y,
+        az          : ahrs.get_accel_ef_blended().z,
+        tmp1        : (float)(accelNED.x),
+        tmp2        : (float)(accel.z-azbias),
+        tmp3        : ahrs.get_accel_ef().z,
+        p           : degrees(ahrs.get_gyro().x),
+        q           : degrees(ahrs.get_gyro().y),
+        r           : degrees(ahrs.get_gyro().z),
+        roll        : (int16_t)ahrs.roll_sensor,
+        pitch       : (int16_t)ahrs.pitch_sensor,
+        yaw         : (uint16_t)ahrs.yaw_sensor,
+        N           : ahrs.get_relative_position_NE_origin(posNE) ? posNE.x : 0.0f,
+        E           : ahrs.get_relative_position_NE_origin(posNE) ? posNE.y : 0.0f,
+        D           : ahrs.get_relative_position_D_origin(posD) ? -posD : 0.0f,
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+
 
 // type and unit information can be found in
 // libraries/DataFlash/Logstructure.h; search for "log_Units" for
@@ -567,6 +646,14 @@ const struct LogStructure Copter::log_structure[] = {
     { LOG_ONR_MSG, sizeof(log_ONR), 
       "ONR", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
 #endif     
+#if MIXERIN_DATAFLASH == ENABLED
+    { LOG_MIXERIN_MSG, sizeof(log_Mixerin),
+      "MIX", "Qffff", "TimeUS,roll_in,pitch_in,yaw_in,throttle_in", "s----", "F----"},
+#endif
+#if STATES_DATAFLASH == ENABLED
+    { LOG_STATES_MSG, sizeof(log_States),
+      "STAS", "QfffffffffccCfff", "TimeUS,ax,ay,az,tmp1,tmp2,tmp3,p,q,r,roll,pitch,yaw,N,E,D", "sooooookkkddhmmm", "F---------BBB---"},
+#endif
 };
 
 void Copter::Log_Write_Vehicle_Startup_Messages()

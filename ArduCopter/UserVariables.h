@@ -4,13 +4,10 @@
 // variables
 #ifdef USERHOOK_VARIABLES
 
-#if WII_CAMERA == 1
-WiiCamera           ircam;
-int                 WiiRange=0;
-int                 WiiRotation=0;
-int                 WiiDisplacementX=0;
-int                 WiiDisplacementY=0;
-#endif  // WII_CAMERA
+float   mixer_in_roll = 0;
+float   mixer_in_pitch = 0;
+float   mixer_in_yaw = 0;
+float   mixer_in_throttle = 0;
 
 #endif  // USERHOOK_VARIABLES
 

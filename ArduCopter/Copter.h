@@ -815,7 +815,10 @@ private:
     void Log_Write_Precland();
     void Log_Write_GuidedTarget(uint8_t target_type, const Vector3f& pos_target, const Vector3f& vel_target);
     void Log_Write_Vehicle_Startup_Messages();
+    // Customized logging
     void Log_Write_ONR();
+    void Log_Write_Mixerin();
+    void Log_Write_States();
     void log_init(void);
 
     // mode.cpp

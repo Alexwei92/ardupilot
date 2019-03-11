@@ -11,7 +11,12 @@ void Copter::userhook_init()
 #ifdef USERHOOK_FASTLOOP
 void Copter::userhook_FastLoop()
 {
-    // put your 100Hz code here
+ #if MIXERIN_DATAFLASH == ENABLED
+    Log_Write_Mixerin();
+ #endif
+ #if STATES_DATAFLASH == ENABLED
+    Log_Write_States();
+ #endif
 }
 #endif
 
@@ -25,7 +30,9 @@ void Copter::userhook_50Hz()
 #ifdef USERHOOK_MEDIUMLOOP
 void Copter::userhook_MediumLoop()
 {
-    // put your 10Hz code here
+ #if ONR_DATAFLASH == ENABLED
+    Log_Write_ONR();
+ #endif
 }
 #endif
 
