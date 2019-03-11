@@ -16,6 +16,11 @@ void Copter::userhook_FastLoop()
  #endif
  #if STATES_DATAFLASH == ENABLED
     Log_Write_States();
+    Log_Write_Accel();
+ #endif
+ #if RC_DATAFLASH == ENABLED
+    DataFlash.Log_Write_RCIN();
+    DataFlash.Log_Write_RCOUT();
  #endif
 }
 #endif

@@ -819,6 +819,7 @@ private:
     void Log_Write_ONR();
     void Log_Write_Mixerin();
     void Log_Write_States();
+    void Log_Write_Accel();
     void log_init(void);
 
     // mode.cpp

@@ -546,56 +546,87 @@ void Copter::Log_Write_Mixerin()
 struct PACKED log_States {
     LOG_PACKET_HEADER;
     uint64_t time_us;
-    float ax;
-    float ay;
-    float az;
-    float tmp1;
-    float tmp2;
-    float tmp3;
-    float p;
-    float q;
-    float r;
-    int16_t roll;
-    int16_t pitch;
-    uint16_t yaw;
-    float N;
-    float E;
-    float D;
+    float p;            // degree per second
+    float q;            // degree per second
+    float r;            // degree per second
+    int16_t roll;       // degree
+    int16_t pitch;      // degree
+    uint16_t yaw;       // degree
+    float VN;           // meter per second
+    float VE;           // meter per second
+    float VD;           // meter per second
+    float N;            // meter
+    float E;            // meter
+    float D;            // meter
 };
 
 // Write 12 states packet
 void Copter::Log_Write_States()
 {
+    Vector3f velNED;
     Vector2f posNE;
-    Vector3f accelNED;
     float posD;
-    float azbias;
-    ahrs.get_NavEKF2().getAccelZBias(-1,azbias);
-    ahrs.get_NavEKF2().getAccelNED(accelNED);
-    const AP_InertialSensor &ins = AP::ins();
-    const Vector3f &accel = ins.get_accel(ahrs.get_primary_accel_index());
+    ahrs.get_velocity_NED(velNED);
+    ahrs.get_relative_position_NE_origin(posNE);
+    ahrs.get_relative_position_D_origin(posD);
     struct log_States pkt = {
         LOG_PACKET_HEADER_INIT(LOG_STATES_MSG),
         time_us     : AP_HAL::micros64(),
-        ax          : ahrs.get_accel_ef_blended().x,
-        ay          : ahrs.get_accel_ef_blended().y,
-        az          : ahrs.get_accel_ef_blended().z,
-        tmp1        : (float)(accelNED.x),
-        tmp2        : (float)(accel.z-azbias),
-        tmp3        : ahrs.get_accel_ef().z,
         p           : degrees(ahrs.get_gyro().x),
         q           : degrees(ahrs.get_gyro().y),
         r           : degrees(ahrs.get_gyro().z),
         roll        : (int16_t)ahrs.roll_sensor,
         pitch       : (int16_t)ahrs.pitch_sensor,
         yaw         : (uint16_t)ahrs.yaw_sensor,
-        N           : ahrs.get_relative_position_NE_origin(posNE) ? posNE.x : 0.0f,
-        E           : ahrs.get_relative_position_NE_origin(posNE) ? posNE.y : 0.0f,
-        D           : ahrs.get_relative_position_D_origin(posD) ? -posD : 0.0f,
+        VN          : (float)(velNED.x),
+        VE          : (float)(velNED.y),
+        VD          : (float)(velNED.z),
+        N           : (float)(posNE.x),
+        E           : (float)(posNE.y),
+        D           : (float)(posD),
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
 
+// three accelerometers logging
+struct PACKED log_Accel {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    float ax1;
+    float ay1;
+    float az1;
+    float ax2;
+    float ay2;
+    float az2;
+    float ax3;
+    float ay3;
+    float az3;
+    uint8_t index;
+};
+
+// Write three accelerometers data packet
+void Copter::Log_Write_Accel()
+{
+    const AP_InertialSensor &ins = AP::ins();
+    const Vector3f &accel1 = ins.get_accel(0);
+    const Vector3f &accel2 = ins.get_accel(1);
+    const Vector3f &accel3 = ins.get_accel(2);
+    struct log_Accel pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_ACCEL_MSG),
+        time_us     : AP_HAL::micros64(),
+        ax1         : (float)(accel1.x),
+        ay1         : (float)(accel1.y),
+        az1         : (float)(accel1.z),
+        ax2         : (float)(accel2.x),
+        ay2         : (float)(accel2.y),
+        az2         : (float)(accel2.z),
+        ax3         : (float)(accel3.x),
+        ay3         : (float)(accel3.y),
+        az3         : (float)(accel3.z),
+        index       : (uint8_t)(ahrs.get_primary_accel_index()),
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
 
 // type and unit information can be found in
 // libraries/DataFlash/Logstructure.h; search for "log_Units" for
@@ -652,7 +683,9 @@ const struct LogStructure Copter::log_structure[] = {
 #endif
 #if STATES_DATAFLASH == ENABLED
     { LOG_STATES_MSG, sizeof(log_States),
-      "STAS", "QfffffffffccCfff", "TimeUS,ax,ay,az,tmp1,tmp2,tmp3,p,q,r,roll,pitch,yaw,N,E,D", "sooooookkkddhmmm", "F---------BBB---"},
+      "STAS", "QfffccCffffff", "TimeUS,p,q,r,roll,pitch,yaw,VN,VE,VD,N,E,D", "skkkddhnnnmmm", "F---BBB------"},
+    { LOG_ACCEL_MSG, sizeof(log_Accel),
+      "ACCE", "QfffffffffB", "TimeUS,ax1,ay1,az1,ax2,ay2,az2,ax3,ay3,az3,index", "soooooooooB", "F----------"},
 #endif
 };
 

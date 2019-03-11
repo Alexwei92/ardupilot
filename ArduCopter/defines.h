@@ -317,6 +317,7 @@ enum LoggingParameters {
      LOG_ONR_MSG,
      LOG_MIXERIN_MSG,
      LOG_STATES_MSG,
+     LOG_ACCEL_MSG,
 };
 
 #define MASK_LOG_ATTITUDE_FAST          (1<<0)
