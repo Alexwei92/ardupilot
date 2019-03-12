@@ -286,6 +286,22 @@ void NOINLINE Copter::send_onr_power(mavlink_channel_t chan)
         18);
 }
 
+/*
+  send SYSID packet
+ */
+void NOINLINE Copter::send_sysid(mavlink_channel_t chan)
+{
+    mavlink_msg_system_id_monitor_send(
+        chan,
+        copter.sweep.roll,   //roll sweep
+        copter.sweep.pitch,   //pitch sweep
+        copter.sweep.yaw,   //yaw sweep
+        copter.sweep.throttle,   //throttle sweep
+        copter.sweep.amplitude, //amplitude
+        copter.sweep.axis,   //axis indicator
+        copter.sweep.status);  //status indicator
+}
+
 uint8_t GCS_MAVLINK_Copter::sysid_my_gcs() const
 {
     return copter.g.sysid_my_gcs;
@@ -409,6 +425,13 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
         copter.send_onr_power(chan);
 #endif
         break;
+
+    case MSG_SYSID:
+#if MAVLINK_SYSID == ENABLED
+        CHECK_PAYLOAD_SIZE(SYSTEM_ID_MONITOR);
+        copter.send_sysid(chan);
+        break;
+#endif
 
     default:
         return GCS_MAVLINK::try_send_message(id);
@@ -566,6 +589,7 @@ static const ap_message STREAM_EXTRA3_msgs[] = {
     MSG_ESC_TELEMETRY,
     MSG_ONR_RPM,
     MSG_ONR_POW,
+    MSG_SYSID,
 };
 static const ap_message STREAM_ADSB_msgs[] = {
     MSG_ADSB_VEHICLE

@@ -12,7 +12,7 @@ bool Copter::ModeSystemID::init(bool ignore_checks)
             (get_pilot_desired_throttle(channel_throttle->get_control_in()) > get_non_takeoff_throttle())) {
         return false;
     }
-
+    // TO-DO: add the radio switch check
     return true;
 }
 
@@ -56,4 +56,11 @@ void Copter::ModeSystemID::run()
 
     // output pilot's throttle
     attitude_control->set_throttle_out(pilot_throttle_scaled, true, g.throttle_filt);
+}
+
+
+// create the sinusoidal signal
+void Copter::ModeSystemID::frequency_sweep()
+{
+    return;
 }

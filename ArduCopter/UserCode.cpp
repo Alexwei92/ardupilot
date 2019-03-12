@@ -3,8 +3,13 @@
 #ifdef USERHOOK_INIT
 void Copter::userhook_init()
 {
-    // put your initialisation code here
-    // this will be called once at start-up
+    sweep.roll = 0.0f;
+    sweep.pitch = 0.0f;
+    sweep.yaw = 0.0f;
+    sweep.throttle = 0.0f;
+    sweep.amplitude = 0.0f;
+    sweep.axis = 0;
+    sweep.status = 0;
 }
 #endif
 
@@ -51,7 +56,7 @@ void Copter::userhook_SlowLoop()
 #ifdef USERHOOK_SUPERSLOWLOOP
 void Copter::userhook_SuperSlowLoop()
 {
-    // put your 1Hz code here
+    // 1Hz
 }
 #endif
 

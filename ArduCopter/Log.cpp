@@ -607,10 +607,10 @@ struct PACKED log_Accel {
 // Write three accelerometers data packet
 void Copter::Log_Write_Accel()
 {
-    const AP_InertialSensor &ins = AP::ins();
-    const Vector3f &accel1 = ins.get_accel(0);
-    const Vector3f &accel2 = ins.get_accel(1);
-    const Vector3f &accel3 = ins.get_accel(2);
+    const AP_InertialSensor &ins1 = AP::ins();
+    const Vector3f &accel1 = ins1.get_accel(0);
+    const Vector3f &accel2 = ins1.get_accel(1);
+    const Vector3f &accel3 = ins1.get_accel(2);
     struct log_Accel pkt = {
         LOG_PACKET_HEADER_INIT(LOG_ACCEL_MSG),
         time_us     : AP_HAL::micros64(),
