@@ -486,6 +486,7 @@ void Copter::Log_Write_GuidedTarget(uint8_t target_type, const Vector3f& pos_tar
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
 
+// Customized log structure and function
 // ONR sensor logging
 struct PACKED log_ONR {
     LOG_PACKET_HEADER;
@@ -500,6 +501,7 @@ struct PACKED log_ONR {
     uint32_t rpm8;
 };
 
+#if ONR_DATAFLASH == ENABLED
 // Write an ONR sensor packet
 void Copter::Log_Write_ONR()
 {
@@ -517,6 +519,7 @@ void Copter::Log_Write_ONR()
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
+#endif
 
 // mixer input logging
 struct PACKED log_Mixerin {
@@ -528,6 +531,7 @@ struct PACKED log_Mixerin {
     float throttle_in;
 };
 
+#if MIXERIN_DATAFLASH == ENABLED
 // Write a mixer input packet
 void Copter::Log_Write_Mixerin()
 {
@@ -541,6 +545,7 @@ void Copter::Log_Write_Mixerin()
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
+#endif
 
 // 12 states logging
 struct PACKED log_States {
@@ -560,9 +565,11 @@ struct PACKED log_States {
     float D;            // meter
 };
 
+#if STATES_DATAFLASH == ENABLED
 // Write 12 states packet
 void Copter::Log_Write_States()
 {
+
     Vector3f velNED;
     Vector2f posNE;
     float posD;
@@ -587,6 +594,7 @@ void Copter::Log_Write_States()
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
+#endif
 
 // three accelerometers logging
 struct PACKED log_Accel {
@@ -604,6 +612,7 @@ struct PACKED log_Accel {
     uint8_t index;
 };
 
+#if STATES_DATAFLASH == ENABLED
 // Write three accelerometers data packet
 void Copter::Log_Write_Accel()
 {
@@ -627,6 +636,32 @@ void Copter::Log_Write_Accel()
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
+#endif
+
+// sweep signal logging
+struct PACKED log_Sweep {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    float signal;
+    uint8_t axis;
+    uint8_t status;
+};
+
+#if SWEEP_DATAFLASH == ENABLED
+// Write a sweep signal packet
+void Copter::Log_Write_Sweep(float signal_value, uint8_t axis_value, uint8_t status_value)
+{
+    struct log_Sweep pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_SWEEP_MSG),
+        time_us        : AP_HAL::micros64(),
+        signal         : signal_value,
+        axis           : axis_value,
+        status         : status_value,
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+#endif
+// End of customized logging structure and function
 
 // type and unit information can be found in
 // libraries/DataFlash/Logstructure.h; search for "log_Units" for
@@ -673,6 +708,7 @@ const struct LogStructure Copter::log_structure[] = {
 #endif
     { LOG_GUIDEDTARGET_MSG, sizeof(log_GuidedTarget),
       "GUID",  "QBffffff",    "TimeUS,Type,pX,pY,pZ,vX,vY,vZ", "s-mmmnnn", "F-000000" },
+// Customized Dataflash structure
 #if ONR_DATAFLASH == ENABLED
     { LOG_ONR_MSG, sizeof(log_ONR), 
       "ONR", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
@@ -685,8 +721,13 @@ const struct LogStructure Copter::log_structure[] = {
     { LOG_STATES_MSG, sizeof(log_States),
       "STAS", "QfffccCffffff", "TimeUS,p,q,r,roll,pitch,yaw,VN,VE,VD,N,E,D", "skkkddhnnnmmm", "F---BBB------"},
     { LOG_ACCEL_MSG, sizeof(log_Accel),
-      "ACCE", "QfffffffffB", "TimeUS,ax1,ay1,az1,ax2,ay2,az2,ax3,ay3,az3,index", "soooooooooB", "F----------"},
+      "ACCE", "QfffffffffB", "TimeUS,ax1,ay1,az1,ax2,ay2,az2,ax3,ay3,az3,index", "sooooooooo-", "F----------"},
 #endif
+#if SWEEP_DATAFLASH == ENABLED
+    { LOG_SWEEP_MSG, sizeof(log_Sweep),
+      "SWEP", "QfBB", "TimeUS,signal,axis,status", "s---", "F---"},
+#endif
+// End of customized Dataflash structure
 };
 
 void Copter::Log_Write_Vehicle_Startup_Messages()

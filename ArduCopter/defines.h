@@ -314,10 +314,13 @@ enum LoggingParameters {
      LOG_HELI_MSG,
      LOG_PRECLAND_MSG,
      LOG_GUIDEDTARGET_MSG,
+// Customized logging msg
      LOG_ONR_MSG,
      LOG_MIXERIN_MSG,
      LOG_STATES_MSG,
      LOG_ACCEL_MSG,
+     LOG_SWEEP_MSG,
+// End of customized logging msg
 };
 
 #define MASK_LOG_ATTITUDE_FAST          (1<<0)

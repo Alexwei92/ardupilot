@@ -306,9 +306,6 @@ private:
     // User variables
 #ifdef USERHOOK_VARIABLES
 # include USERHOOK_VARIABLES
- #if MAVLINK_SYSID == ENABLED
-    freq_sweep sweep;
- #endif
 #endif
 
     // Documentation of GLobals:
@@ -818,11 +815,21 @@ private:
     void Log_Write_Precland();
     void Log_Write_GuidedTarget(uint8_t target_type, const Vector3f& pos_target, const Vector3f& vel_target);
     void Log_Write_Vehicle_Startup_Messages();
-    // Customized logging
+// Customized logging
+#if ONR_DATAFLASH == ENABLED
     void Log_Write_ONR();
+#endif
+#if MIXERIN_DATAFLASH == ENABLED
     void Log_Write_Mixerin();
+#endif
+#if STATES_DATAFLASH == ENABLED
     void Log_Write_States();
     void Log_Write_Accel();
+#endif
+#if SWEEP_DATAFLASH == ENABLED
+    void Log_Write_Sweep(float signal_value, uint8_t axis_value, uint8_t status_value);
+#endif
+// End of Customized logging
     void log_init(void);
 
     // mode.cpp
@@ -953,6 +960,9 @@ private:
     void userhook_auxSwitch1(uint8_t ch_flag);
     void userhook_auxSwitch2(uint8_t ch_flag);
     void userhook_auxSwitch3(uint8_t ch_flag);
+// Customized UserCode    
+    void start_frequency_sweep();
+// End of Customized Usercode
 
 #include "mode.h"
 
@@ -1020,7 +1030,9 @@ private:
 #if !HAL_MINIMIZE_FEATURES && OPTFLOW == ENABLED
     ModeFlowHold mode_flowhold;
 #endif
+// Customized User Flight Mode
     ModeSystemID mode_sysid;
+// End of customized User Flight Mode
 
     // mode.cpp
     Mode *mode_from_mode_num(const uint8_t mode);

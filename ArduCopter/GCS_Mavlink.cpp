@@ -252,9 +252,11 @@ void Copter::send_pid_tuning(mavlink_channel_t chan)
     }
 }
 
+// Customized GCS_Mavlink function
 /*
   send ONR-RPM packet
  */
+#if SIM_ONR == ENABLED
 void NOINLINE Copter::send_onr_rpm(mavlink_channel_t chan)
 {
     mavlink_msg_onr_rpm_sensor_send(
@@ -285,10 +287,12 @@ void NOINLINE Copter::send_onr_power(mavlink_channel_t chan)
         17,
         18);
 }
+#endif
 
 /*
   send SYSID packet
  */
+#if MAVLINK_SYSID == ENABLED
 void NOINLINE Copter::send_sysid(mavlink_channel_t chan)
 {
     mavlink_msg_system_id_monitor_send(
@@ -301,6 +305,8 @@ void NOINLINE Copter::send_sysid(mavlink_channel_t chan)
         copter.sweep.axis,   //axis indicator
         copter.sweep.status);  //status indicator
 }
+#endif
+// End of customized GCS_Mavlink function
 
 uint8_t GCS_MAVLINK_Copter::sysid_my_gcs() const
 {
@@ -411,7 +417,7 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
         copter.adsb.send_adsb_vehicle(chan);
 #endif
         break;
-
+// Customized GCS_MAVLINK switch cases
     case MSG_ONR_RPM:
 #if SIM_ONR == ENABLED
         CHECK_PAYLOAD_SIZE(ONR_RPM_SENSOR);
@@ -432,6 +438,7 @@ bool GCS_MAVLINK_Copter::try_send_message(enum ap_message id)
         copter.send_sysid(chan);
         break;
 #endif
+// End of customized GCS_MAVLINK switch cases
 
     default:
         return GCS_MAVLINK::try_send_message(id);
@@ -587,9 +594,15 @@ static const ap_message STREAM_EXTRA3_msgs[] = {
     MSG_VIBRATION,
     MSG_RPM,
     MSG_ESC_TELEMETRY,
+// Customized msg logging in EXTRA3
+#if SIM_ONR == ENABLED
     MSG_ONR_RPM,
     MSG_ONR_POW,
+#endif
+#if MAVLINK_SYSID == ENABLED
     MSG_SYSID,
+#endif
+// End of customized msg logging in EXTRA3
 };
 static const ap_message STREAM_ADSB_msgs[] = {
     MSG_ADSB_VEHICLE

@@ -67,10 +67,14 @@
 //#define USERHOOK_SUPERSLOWLOOP userhook_SuperSlowLoop();  // for code to be run at 1hz
 //#define USERHOOK_AUXSWITCH ENABLED                        // for code to handle user aux switches
 
+// ONR
 #define SIM_ONR DISABLED            // for code to simulate ONR sensor readings
-
 #define ONR_DATAFLASH DISABLED      // for code to enable ONR sensor reading Dataflash
+
+// SYSID
 #define MIXERIN_DATAFLASH ENABLED   // for code to enable mixer input Dataflash at 100hz
-#define STATES_DATAFLASH ENABLED   // for code to enable states Dataflash at 100hz
-#define RC_DATAFLASH DISABLED       // to record RC in/out data at 100hz 
-#define MAVLINK_SYSID ENABLED       // send system id data via mavlink
+#define STATES_DATAFLASH ENABLED    // for code to enable states and 3 accelerometers Dataflash at 100hz
+#define RC_DATAFLASH ENABLED        // to record RC in/out data at 100hz 
+
+#define SWEEP_DATAFLASH ENABLED     // for code to enable system id signal Dataflash at 100hz
+#define MAVLINK_SYSID ENABLED       // send system id data via mavlink in EXTRA3

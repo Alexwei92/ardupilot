@@ -1120,7 +1120,7 @@ private:
 
 };
 
-
+// Customized flight mode
 class ModeSystemID : public Mode {
 
 public:
@@ -1141,9 +1141,22 @@ protected:
     const char *name4() const override { return "SYSI"; }
 
 private:
+    void frequency_sweep();
 
+    enum Status {
+        STANDBY = 0,        // ideal status
+        START = 1,          // start the frequency sweep
+        END = 2,            // stop the frequency sweep
+    };
+
+    enum AxisType {
+        ROLL = 0,           // frequency sweep roll axis
+        PITCH = 1,          // frequency sweep roll axis
+        YAW = 2,            // frequency sweep roll axis
+        THROTTLE = 3,       // frequency sweep roll axis
+    };
 };
-
+// End of customized flight mode
 
 #if FRAME_CONFIG == HELI_FRAME
 class ModeStabilize_Heli : public ModeStabilize {
