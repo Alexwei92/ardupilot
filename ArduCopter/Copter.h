@@ -961,7 +961,8 @@ private:
     void userhook_auxSwitch2(uint8_t ch_flag);
     void userhook_auxSwitch3(uint8_t ch_flag);
 // Customized UserCode    
-    void start_frequency_sweep();
+    void start_frequency_sweep(uint32_t my_current_time);
+    void reset_frequency_sweep();
 // End of Customized Usercode
 
 #include "mode.h"

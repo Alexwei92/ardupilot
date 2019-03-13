@@ -302,8 +302,8 @@ void NOINLINE Copter::send_sysid(mavlink_channel_t chan)
         copter.sweep.yaw,   //yaw sweep
         copter.sweep.throttle,   //throttle sweep
         copter.sweep.amplitude, //amplitude
-        copter.sweep.axis,   //axis indicator
-        copter.sweep.status);  //status indicator
+        (uint8_t)copter.sweep.axis,   //axis indicator
+        (uint8_t)copter.sweep.status);  //status indicator
 }
 #endif
 // End of customized GCS_Mavlink function

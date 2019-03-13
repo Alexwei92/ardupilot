@@ -27,28 +27,40 @@
 #define MY_TMIN (1.0/MY_FMIN)*MY_N
 #define MY_TACTIVE (MY_TOTAL-MY_TMIN)
 
+enum Axis {
+    ROLL = 0,
+    PITCH = 1,
+    YAW = 2,
+    THROTTLE = 3,
+};
+
+enum Status {
+    STANDBY = 0,
+    START = 1,
+    STOP = 2,
+};
+
 struct freq_sweep{
     float   roll;     
     float   pitch;  
     float   yaw;    
     float   throttle;    
     float   amplitude;
-    uint8_t   axis;        // 0:roll, 1:pitch, 2:yaw, 3:throttle
-    uint8_t   status;      // 0:STANDBY, 1:START, 2:STOP
+    Axis    axis;   // 0:roll, 1:pitch, 2:yaw, 3:throttle
+    Status  status; // 0:STANDBY, 1:START, 2:STOP
 };
 
 freq_sweep sweep;
 
 uint32_t my_init_time = 0;
 uint32_t my_start_time = 0;
-uint32_t my_current_time = 0;
+//uint32_t my_current_time = 0;
 uint32_t my_last_time = 0;
 uint32_t my_period = 0;
 uint32_t my_dt = 0;
 double my_theta = 0.0;
-double my_delta = 0.0;
-double my_omega = 0.0;
-double my_K = 0.0;
+//double my_delta = 0.0;
+//double my_K = 0.0;
 
 #endif  // USERHOOK_VARIABLES
 
