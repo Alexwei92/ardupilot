@@ -52,15 +52,12 @@ struct freq_sweep{
 
 freq_sweep sweep;
 
-uint32_t my_init_time = 0;
 uint32_t my_start_time = 0;
-//uint32_t my_current_time = 0;
 uint32_t my_last_time = 0;
 uint32_t my_period = 0;
 uint32_t my_dt = 0;
+
 double my_theta = 0.0;
-//double my_delta = 0.0;
-//double my_K = 0.0;
 
 #endif  // USERHOOK_VARIABLES
 

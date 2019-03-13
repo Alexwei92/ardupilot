@@ -11,7 +11,6 @@ void Copter::userhook_init()
     sweep.axis = ROLL;
     sweep.status = STANDBY;
    
-    my_init_time = millis();
 }
 #endif
 
@@ -105,6 +104,17 @@ void Copter::userhook_auxSwitch1(uint8_t ch_flag)
 void Copter::userhook_auxSwitch2(uint8_t ch_flag)
 {
     // put your aux switch #2 handler here (CHx_OPT = 48)
+    if (control_mode != SYS_ID) {
+        gcs().send_text(MAV_SEVERITY_WARNING,"Must be in SYS_ID flight mode");
+        reset_frequency_sweep();
+        sweep.status = STANDBY;
+        return;
+    }
+
+    if (!motors->armed()) {
+        return;
+    }
+
     switch (ch_flag) {
         case AUX_SWITCH_LOW:
         case AUX_SWITCH_MIDDLE:
@@ -177,4 +187,5 @@ void Copter::reset_frequency_sweep()
     sweep.pitch = 0.0f;
     sweep.yaw = 0.0f;
     sweep.throttle = 0.0f;
+    my_theta = 0.0;
 }
