@@ -297,10 +297,10 @@ void NOINLINE Copter::send_sysid(mavlink_channel_t chan)
 {
     mavlink_msg_system_id_monitor_send(
         chan,
-        copter.sweep.roll,   //roll sweep
-        copter.sweep.pitch,   //pitch sweep
-        copter.sweep.yaw,   //yaw sweep
-        copter.sweep.throttle,   //throttle sweep
+        copter.sweep.signal,   //roll sweep
+        copter.tmp1,   //pitch sweep
+        copter.tmp2,   //yaw sweep
+        copter.tmp3,   //throttle sweep
         copter.sweep.amplitude, //amplitude
         (uint8_t)copter.sweep.axis,   //axis indicator
         (uint8_t)copter.sweep.status);  //status indicator
