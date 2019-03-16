@@ -54,22 +54,26 @@ void Copter::ModeSystemID::run()
             case ROLL:
                 run_frequency_sweep(copter.sweep_roll);
                 target_roll += (float)copter.sweep.signal*aparm.angle_max;
-                copter.tmp3 = target_roll;
+                target_roll = constrain_float(target_roll, -aparm.angle_max, aparm.angle_max);
+                //copter.tmp3 = target_roll;
                 break;
             case PITCH:
                 run_frequency_sweep(copter.sweep_pitch);
                 target_pitch += (float)copter.sweep.signal*aparm.angle_max;
-                copter.tmp3 = target_pitch;
+                target_pitch = constrain_float(target_pitch, -aparm.angle_max, aparm.angle_max);
+                //copter.tmp3 = target_pitch;
                 break;
             case YAW:
                 run_frequency_sweep(copter.sweep_yaw);
                 target_yaw_rate += (float)copter.sweep.signal*aparm.angle_max*g.acro_yaw_p;
-                copter.tmp3 = target_yaw_rate;
+                target_yaw_rate = constrain_float(target_yaw_rate, -aparm.angle_max*g.acro_yaw_p, aparm.angle_max*g.acro_yaw_p);
+                //copter.tmp3 = target_yaw_rate;
                 break;
             case THROTTLE:
                 run_frequency_sweep(copter.sweep_throttle);
                 pilot_throttle_scaled += (float)copter.sweep.signal;
-                copter.tmp3 = pilot_throttle_scaled;
+                pilot_throttle_scaled = constrain_float(pilot_throttle_scaled, 0.0f, 1.0f);
+                //copter.tmp3 = pilot_throttle_scaled;
                 break;
         }
     }
