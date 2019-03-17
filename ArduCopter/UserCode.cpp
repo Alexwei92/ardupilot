@@ -13,8 +13,8 @@ void Copter::userhook_init()
 #ifdef USERHOOK_FASTLOOP
 void Copter::userhook_FastLoop()
 {
-    if (control_mode != SYS_ID && sweep.status == START) {
-        gcs().send_text(MAV_SEVERITY_WARNING,"Must be in SYS_ID flight mode");
+    if (control_mode != SYS_ID && control_mode != ALT_HOLD && sweep.status == START) {
+        gcs().send_text(MAV_SEVERITY_WARNING,"Must be in SYS_ID/ALT_HOLD flight mode");
         reset_frequency_sweep();
         sweep.status = STANDBY;
     } else if(sweep.status != START) {
@@ -83,6 +83,7 @@ void Copter::userhook_SuperSlowLoop()
 void Copter::userhook_auxSwitch1(uint8_t ch_flag)
 {
     // put your aux switch #1 handler here (CHx_OPT = 47)
+    // switch among roll, pitch, yaw axes
     if (sweep.status == START) {
         gcs().send_text(MAV_SEVERITY_WARNING, "Change axis failed");
         return;
@@ -104,7 +105,8 @@ void Copter::userhook_auxSwitch1(uint8_t ch_flag)
 void Copter::userhook_auxSwitch2(uint8_t ch_flag)
 {
     // put your aux switch #2 handler here (CHx_OPT = 48)
-    if (control_mode != SYS_ID) {
+    // switch among the standby, start, stop status
+    if (control_mode != SYS_ID && control_mode != ALT_HOLD) {
         return;
     }
 
@@ -126,7 +128,7 @@ void Copter::userhook_auxSwitch2(uint8_t ch_flag)
 void Copter::userhook_auxSwitch3(uint8_t ch_flag)
 {
     // put your aux switch #3 handler here (CHx_OPT = 49)
-
+    // enable throttle axis
     switch (ch_flag) {
         case AUX_SWITCH_LOW:
         case AUX_SWITCH_MIDDLE:

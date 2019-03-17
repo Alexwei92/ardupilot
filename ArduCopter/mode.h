@@ -254,6 +254,8 @@ protected:
     const char *name4() const override { return "ALTH"; }
 
 private:
+    void run_frequency_sweep(const freq_setting my_settings);
+    bool check_status();
 
 };
 

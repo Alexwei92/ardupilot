@@ -46,9 +46,9 @@ struct freq_setting {
 sweep_monitor sweep;
 
 // follow this format             = {T_fadein, T_fadeout, T_trimin, T_trimout, T_total,  F_min,  F_max,  A_min,  A_max}
-const freq_setting sweep_roll     = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.3f};
-const freq_setting sweep_pitch    = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.3f};
-const freq_setting sweep_yaw      = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.3f};
+const freq_setting sweep_roll     = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.4f};
+const freq_setting sweep_pitch    = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.4f};
+const freq_setting sweep_yaw      = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.4f};
 const freq_setting sweep_throttle = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.2f};
 
 // variables used to calculate frequency sweep
