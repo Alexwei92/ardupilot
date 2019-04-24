@@ -645,11 +645,12 @@ struct PACKED log_Sweep {
     float signal;
     uint8_t axis;
     uint8_t status;
+    uint8_t type;
 };
 
 #if SWEEP_DATAFLASH == ENABLED
 // Write a sweep signal packet
-void Copter::Log_Write_Sweep(float signal_value, uint8_t axis_value, uint8_t status_value)
+void Copter::Log_Write_Sweep(float signal_value, uint8_t axis_value, uint8_t status_value, uint8_t type_value)
 {
     struct log_Sweep pkt = {
         LOG_PACKET_HEADER_INIT(LOG_SWEEP_MSG),
@@ -657,6 +658,7 @@ void Copter::Log_Write_Sweep(float signal_value, uint8_t axis_value, uint8_t sta
         signal         : signal_value,
         axis           : axis_value,
         status         : status_value,
+        type           : type_value,
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
@@ -725,7 +727,7 @@ const struct LogStructure Copter::log_structure[] = {
 #endif
 #if SWEEP_DATAFLASH == ENABLED
     { LOG_SWEEP_MSG, sizeof(log_Sweep),
-      "SWEP", "QfBB", "TimeUS,signal,axis,status", "s---", "F---"},
+      "SWEP", "QfBBB", "TimeUS,signal,axis,status,type", "s----", "F----"},
 #endif
 // End of customized Dataflash structure
 };

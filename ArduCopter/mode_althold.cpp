@@ -144,19 +144,31 @@ void Copter::ModeAltHold::run()
         if (check_status()) {
             switch (copter.sweep.axis) {
                 case ROLL:
-                    run_frequency_sweep(copter.sweep_roll);
+                    if(copter.sweep.type == SWEEP) {
+                        run_frequency_sweep(copter.sweep_roll);
+                    } else {
+                        run_doublet(copter.doublet_roll);
+                    }
                     target_roll += (float)copter.sweep.signal*copter.aparm.angle_max;
                     target_roll = constrain_float(target_roll, -copter.aparm.angle_max, copter.aparm.angle_max);
                     //copter.tmp3 = target_roll;
                     break;
                 case PITCH:
-                    run_frequency_sweep(copter.sweep_pitch);
+                    if(copter.sweep.type == SWEEP) {
+                        run_frequency_sweep(copter.sweep_pitch);
+                    } else {
+                        run_doublet(copter.doublet_pitch);
+                    }
                     target_pitch += (float)copter.sweep.signal*copter.aparm.angle_max;
                     target_pitch = constrain_float(target_pitch, -copter.aparm.angle_max, copter.aparm.angle_max);
                     //copter.tmp3 = target_pitch;
                     break;
                 case YAW:
-                    run_frequency_sweep(copter.sweep_yaw);
+                    if(copter.sweep.type == SWEEP) {
+                        run_frequency_sweep(copter.sweep_yaw);
+                    } else {
+                        run_doublet(copter.doublet_yaw);
+                    }
                     target_yaw_rate += (float)copter.sweep.signal*copter.aparm.angle_max*g.acro_yaw_p;
                     target_yaw_rate = constrain_float(target_yaw_rate, -copter.aparm.angle_max*g.acro_yaw_p, copter.aparm.angle_max*g.acro_yaw_p);
                     //copter.tmp3 = target_yaw_rate;
@@ -176,8 +188,12 @@ void Copter::ModeAltHold::run()
         target_climb_rate = get_avoidance_adjusted_climbrate(target_climb_rate);
 
         // inject throttle frequency input
-        if (copter.sweep.axis == THROTTLE) {
-            run_frequency_sweep(copter.sweep_throttle);
+        if (check_status() && copter.sweep.axis == THROTTLE) {
+            if(copter.sweep.type == SWEEP) {
+                run_frequency_sweep(copter.sweep_throttle);
+            } else {
+                run_doublet(copter.doublet_throttle);
+            }
             target_climb_rate += (float)copter.sweep.signal*g.pilot_speed_up;
             target_climb_rate = constrain_float(target_climb_rate, -g.pilot_speed_up, g.pilot_speed_up);
             //copter.tmp3 = target_climb_rate;
@@ -258,6 +274,43 @@ void Copter::ModeAltHold::run_frequency_sweep(const freq_setting my_settings)
         my_delta = my_delta*(my_period*1e-3f-_T_trimin)/_T_fadein;
     } else if (my_period > (_T_trimin+_T_total-_T_fadeout)*S_2_MILLIS) {
         my_delta = my_delta*(_T_trimin+_T_total-my_period*1e-3f)/_T_fadeout;
+    }
+    copter.sweep.signal = (float)my_delta;
+    return;
+}
+
+// create the doublet signal
+void Copter::ModeAltHold::run_doublet(const doub_setting my_settings)
+{
+    uint32_t my_current_time = millis();
+    uint32_t my_period = my_current_time - copter.my_start_time;
+
+    uint8_t _T_trimin = my_settings.T_trimin;
+    uint8_t _T_trimout = my_settings.T_trimout;
+    uint8_t _T_pulse = my_settings.T_pulse;
+
+    float my_delta = 0.0f;
+
+    if (my_period > (_T_trimin+2*_T_pulse+_T_trimout)*S_2_MILLIS) {
+        my_delta = 0.0f;
+        copter.sweep.signal = (float)my_delta;
+        if (copter.sweep.status == START) {
+            gcs().send_text(MAV_SEVERITY_INFO, "Doublet end");
+            copter.sweep.status = STOP;
+        }
+        return;
+    }
+
+    if ((my_period < _T_trimin*S_2_MILLIS) || (my_period > (_T_trimin+2*_T_pulse)*S_2_MILLIS)) {
+        my_delta = 0.0f;
+        copter.sweep.signal = (float)my_delta;
+        return;
+    }
+
+    if (my_period < (_T_trimin+_T_pulse)*S_2_MILLIS) {
+        my_delta = copter.sweep.amplitude*my_settings.A_max;
+    } else {
+        my_delta = -copter.sweep.amplitude*my_settings.A_max;
     }
     copter.sweep.signal = (float)my_delta;
     return;

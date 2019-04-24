@@ -827,7 +827,7 @@ private:
     void Log_Write_Accel();
 #endif
 #if SWEEP_DATAFLASH == ENABLED
-    void Log_Write_Sweep(float signal_value, uint8_t axis_value, uint8_t status_value);
+    void Log_Write_Sweep(float signal_value, uint8_t axis_value, uint8_t status_value, uint8_t type_value);
 #endif
 // End of Customized logging
     void log_init(void);

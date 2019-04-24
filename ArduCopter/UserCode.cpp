@@ -7,6 +7,7 @@ void Copter::userhook_init()
     sweep.amplitude = 0.0f;
     sweep.axis = ROLL;
     sweep.status = STANDBY;
+    sweep.type = SWEEP;
 }
 #endif
 
@@ -33,7 +34,7 @@ void Copter::userhook_FastLoop()
     DataFlash.Log_Write_RCOUT();
  #endif
  #if SWEEP_DATAFLASH == ENABLED
-    Log_Write_Sweep((float)sweep.signal,(uint8_t)sweep.axis,(uint8_t)sweep.status);
+    Log_Write_Sweep((float)sweep.signal,(uint8_t)sweep.axis,(uint8_t)sweep.status,(uint8_t)sweep.type);
  #endif
 }
 #endif
@@ -68,7 +69,14 @@ void Copter::userhook_SlowLoop()
 
     uint16_t radio_in = rc6->get_radio_in();
     float control_in = constrain_float((radio_in - rc6->get_radio_min()) / float(rc6->get_radio_max() - rc6->get_radio_min()), 0, 1); 
-    sweep.amplitude = control_in;
+    //sweep.amplitude = control_in;
+    if (control_in > 0.9f){
+        sweep.type = DOUBLET;
+        sweep.amplitude = 0.5f;
+    } else {
+        sweep.type = SWEEP;
+        sweep.amplitude = control_in;
+    }
 }
 #endif
 
@@ -117,7 +125,11 @@ void Copter::userhook_auxSwitch2(uint8_t ch_flag)
             break;
         case AUX_SWITCH_HIGH:
             if (sweep.status == STANDBY && sweep.status != STOP) {
-                gcs().send_text(MAV_SEVERITY_INFO,"Frequency sweep begin");
+                if (sweep.type == SWEEP) {
+                    gcs().send_text(MAV_SEVERITY_INFO,"Frequency sweep begin");
+                } else {
+                    gcs().send_text(MAV_SEVERITY_INFO,"Doublet begin");
+                }
                 sweep.status = START;
                 my_start_time = my_last_time = millis();
             }

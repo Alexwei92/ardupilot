@@ -255,6 +255,7 @@ protected:
 
 private:
     void run_frequency_sweep(const freq_setting my_settings);
+    void run_doublet(const doub_setting my_settings);
     bool check_status();
 
 };
