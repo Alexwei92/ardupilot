@@ -71,11 +71,15 @@ void Copter::userhook_SlowLoop()
     float control_in = constrain_float((radio_in - rc6->get_radio_min()) / float(rc6->get_radio_max() - rc6->get_radio_min()), 0, 1); 
     //sweep.amplitude = control_in;
     if (control_in > 0.9f){
-        sweep.type = DOUBLET;
-        sweep.amplitude = 0.5f;
+        if (sweep.status != START) {
+            sweep.type = DOUBLET;
+            sweep.amplitude = 0.5f;
+        }
     } else {
-        sweep.type = SWEEP;
-        sweep.amplitude = control_in;
+        if (sweep.status != START || sweep.type == SWEEP){
+            sweep.type = SWEEP;
+            sweep.amplitude = control_in;
+        }
     }
 }
 #endif
