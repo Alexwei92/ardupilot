@@ -315,7 +315,8 @@ enum LoggingParameters {
      LOG_PRECLAND_MSG,
      LOG_GUIDEDTARGET_MSG,
 // Customized logging msg
-     LOG_ONR_MSG,
+     LOG_ONRRPM_MSG,
+     LOG_ONRPOWER_MSG,
      LOG_MIXERIN_MSG,
      LOG_STATES_MSG,
      LOG_ACCEL_MSG,

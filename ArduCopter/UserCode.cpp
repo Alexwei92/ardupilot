@@ -50,7 +50,8 @@ void Copter::userhook_50Hz()
 void Copter::userhook_MediumLoop()
 {
  #if ONR_DATAFLASH == ENABLED
-    Log_Write_ONR();
+    Log_Write_ONRRPM();
+    Log_Write_ONRPOWER();
  #endif
 }
 #endif

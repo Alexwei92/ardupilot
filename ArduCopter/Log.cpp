@@ -488,7 +488,7 @@ void Copter::Log_Write_GuidedTarget(uint8_t target_type, const Vector3f& pos_tar
 
 // Customized log structure and function
 // ONR sensor logging
-struct PACKED log_ONR {
+struct PACKED log_ONRRPM {
     LOG_PACKET_HEADER;
     uint64_t time_us;
     uint32_t rpm1;
@@ -501,12 +501,25 @@ struct PACKED log_ONR {
     uint32_t rpm8;
 };
 
+struct PACKED log_ONRPOWER {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    uint32_t none1;
+    uint32_t battery_temperature;
+    uint32_t battery_voltage;
+    uint32_t battery_current;
+    uint32_t bec_voltage;
+    uint32_t bec_current;
+    uint32_t none2;
+    uint32_t none3;
+};
+
 #if ONR_DATAFLASH == ENABLED
 // Write an ONR sensor packet
-void Copter::Log_Write_ONR()
+void Copter::Log_Write_ONRRPM()
 {
-    struct log_ONR pkt = {
-        LOG_PACKET_HEADER_INIT(LOG_ONR_MSG),
+    struct log_ONRRPM pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_ONRRPM_MSG),
         time_us    : AP_HAL::micros64(),
         rpm1       : 1,
         rpm2       : 2,
@@ -516,6 +529,23 @@ void Copter::Log_Write_ONR()
         rpm6       : 6,
         rpm7       : 7,
         rpm8       : 8,
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+
+void Copter::Log_Write_ONRPOWER()
+{
+    struct log_ONRPOWER pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_ONRPOWER_MSG),
+        time_us    : AP_HAL::micros64(),
+        none1                 : 0,
+        battery_temperature   : 1,
+        battery_voltage       : 2,
+        battery_current       : 3,
+        bec_voltage           : 4,
+        bec_current           : 5,
+        none2                 : 6,
+        none3                 : 7,
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
@@ -712,8 +742,10 @@ const struct LogStructure Copter::log_structure[] = {
       "GUID",  "QBffffff",    "TimeUS,Type,pX,pY,pZ,vX,vY,vZ", "s-mmmnnn", "F-000000" },
 // Customized Dataflash structure
 #if ONR_DATAFLASH == ENABLED
-    { LOG_ONR_MSG, sizeof(log_ONR), 
-      "ONR", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
+    { LOG_ONRRPM_MSG, sizeof(log_ONRRPM), 
+      "ONR1", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
+    { LOG_ONRPOWER_MSG, sizeof(log_ONRPOWER), 
+      "ONR2", "QIIIIIIII", "TimeUS,none1,batT,batV,batI,becV,becI,none2,none3", "s--------", "F--------"},
 #endif     
 #if MIXERIN_DATAFLASH == ENABLED
     { LOG_MIXERIN_MSG, sizeof(log_Mixerin),

@@ -817,7 +817,8 @@ private:
     void Log_Write_Vehicle_Startup_Messages();
 // Customized logging
 #if ONR_DATAFLASH == ENABLED
-    void Log_Write_ONR();
+    void Log_Write_ONRRPM();
+    void Log_Write_ONRPOWER();
 #endif
 #if MIXERIN_DATAFLASH == ENABLED
     void Log_Write_Mixerin();
