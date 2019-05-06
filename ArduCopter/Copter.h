@@ -963,6 +963,8 @@ private:
     void userhook_auxSwitch3(uint8_t ch_flag);
 // Customized UserCode    
     void reset_frequency_sweep();
+    void handle_onr_rpm_msg(const mavlink_message_t* msg);
+    void handle_onr_power_msg(const mavlink_message_t* msg);
 // End of Customized Usercode
 
 #include "mode.h"

@@ -521,14 +521,14 @@ void Copter::Log_Write_ONRRPM()
     struct log_ONRRPM pkt = {
         LOG_PACKET_HEADER_INIT(LOG_ONRRPM_MSG),
         time_us    : AP_HAL::micros64(),
-        rpm1       : 1,
-        rpm2       : 2,
-        rpm3       : 3,
-        rpm4       : 4,
-        rpm5       : 5,
-        rpm6       : 6,
-        rpm7       : 7,
-        rpm8       : 8,
+        rpm1       : (uint32_t)copter.onr_rpm.rpm1,
+        rpm2       : (uint32_t)copter.onr_rpm.rpm2,
+        rpm3       : (uint32_t)copter.onr_rpm.rpm3,
+        rpm4       : (uint32_t)copter.onr_rpm.rpm4,
+        rpm5       : (uint32_t)copter.onr_rpm.rpm5,
+        rpm6       : (uint32_t)copter.onr_rpm.rpm6,
+        rpm7       : (uint32_t)copter.onr_rpm.rpm7,
+        rpm8       : (uint32_t)copter.onr_rpm.rpm8,
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
@@ -537,15 +537,15 @@ void Copter::Log_Write_ONRPOWER()
 {
     struct log_ONRPOWER pkt = {
         LOG_PACKET_HEADER_INIT(LOG_ONRPOWER_MSG),
-        time_us    : AP_HAL::micros64(),
-        none1                 : 0,
-        battery_temperature   : 1,
-        battery_voltage       : 2,
-        battery_current       : 3,
-        bec_voltage           : 4,
-        bec_current           : 5,
-        none2                 : 6,
-        none3                 : 7,
+        time_us               : AP_HAL::micros64(),
+        none1                 : (uint32_t)copter.onr_power.none1,
+        battery_temperature   : (uint32_t)copter.onr_power.battery_temperature,
+        battery_voltage       : (uint32_t)copter.onr_power.battery_voltage,
+        battery_current       : (uint32_t)copter.onr_power.battery_current,
+        bec_voltage           : (uint32_t)copter.onr_power.bec_voltage,
+        bec_current           : (uint32_t)copter.onr_power.bec_current,
+        none2                 : (uint32_t)copter.onr_power.none2,
+        none3                 : (uint32_t)copter.onr_power.none3,
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }

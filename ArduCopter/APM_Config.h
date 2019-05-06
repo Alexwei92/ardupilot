@@ -69,7 +69,7 @@
 
 // ONR
 #define SIM_ONR DISABLED            // for code to simulate ONR sensor readings
-#define ONR_DATAFLASH DISABLED      // for code to enable ONR sensor reading Dataflash
+#define ONR_DATAFLASH ENABLED      // for code to enable ONR sensor reading Dataflash
 
 // SYSID
 #define MIXERIN_DATAFLASH ENABLED   // for code to enable mixer input Dataflash at 100hz

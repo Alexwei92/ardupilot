@@ -1658,6 +1658,22 @@ void GCS_MAVLINK_Copter::handleMessage(mavlink_message_t* msg)
         break;
 #endif
         
+// Customized handling of ONR message
+#if ONR_DATAFLASH == ENABLED
+    case MAVLINK_MSG_ID_ONR_RPM_SENSOR:
+    {
+        copter.handle_onr_rpm_msg(msg);
+        break;
+    }
+
+    case MAVLINK_MSG_ID_ONR_POWER_SENSOR:
+    {
+        copter.handle_onr_power_msg(msg);
+        break;
+    }
+#endif
+// End customized handling of ONR message
+
     default:
         handle_common_message(msg);
         break;
