@@ -506,10 +506,10 @@ struct PACKED log_ONRPOWER {
     uint64_t time_us;
     uint32_t none1;
     uint32_t battery_temperature;
-    uint32_t battery_voltage;
     uint32_t battery_current;
-    uint32_t bec_voltage;
+    uint32_t battery_voltage;
     uint32_t bec_current;
+    uint32_t bec_voltage;
     uint32_t none2;
     uint32_t none3;
 };
@@ -540,10 +540,10 @@ void Copter::Log_Write_ONRPOWER()
         time_us               : AP_HAL::micros64(),
         none1                 : (uint32_t)copter.onr_power.none1,
         battery_temperature   : (uint32_t)copter.onr_power.battery_temperature,
-        battery_voltage       : (uint32_t)copter.onr_power.battery_voltage,
         battery_current       : (uint32_t)copter.onr_power.battery_current,
-        bec_voltage           : (uint32_t)copter.onr_power.bec_voltage,
+        battery_voltage       : (uint32_t)copter.onr_power.battery_voltage,
         bec_current           : (uint32_t)copter.onr_power.bec_current,
+        bec_voltage           : (uint32_t)copter.onr_power.bec_voltage,
         none2                 : (uint32_t)copter.onr_power.none2,
         none3                 : (uint32_t)copter.onr_power.none3,
     };
@@ -745,7 +745,7 @@ const struct LogStructure Copter::log_structure[] = {
     { LOG_ONRRPM_MSG, sizeof(log_ONRRPM), 
       "ONR1", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
     { LOG_ONRPOWER_MSG, sizeof(log_ONRPOWER), 
-      "ONR2", "QIIIIIIII", "TimeUS,none1,batT,batV,batI,becV,becI,none2,none3", "s--------", "F--------"},
+      "ONR2", "QIIIIIIII", "TimeUS,none1,batT,batI,batV,becI,becV,none2,none3", "s--------", "F--------"},
 #endif     
 #if MIXERIN_DATAFLASH == ENABLED
     { LOG_MIXERIN_MSG, sizeof(log_Mixerin),

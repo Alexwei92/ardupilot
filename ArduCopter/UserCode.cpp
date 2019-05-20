@@ -20,10 +20,10 @@ void Copter::userhook_init()
 
     onr_power.none1 = 0;
     onr_power.battery_temperature = 0;
-    onr_power.battery_voltage = 0;
     onr_power.battery_current = 0;
-    onr_power.bec_voltage = 0;
+    onr_power.battery_voltage = 0;
     onr_power.bec_current = 0;
+    onr_power.bec_voltage = 0;
     onr_power.none2 = 0;
     onr_power.none3 = 0;
 }
@@ -206,10 +206,10 @@ void Copter::handle_onr_power_msg(const mavlink_message_t* msg)
     mavlink_msg_onr_power_sensor_decode(msg, &packet);
     onr_power.none1               = packet.none1;
     onr_power.battery_temperature = packet.battery_temperature;
-    onr_power.battery_voltage     = packet.battery_voltage;
     onr_power.battery_current     = packet.battery_current;
-    onr_power.bec_voltage         = packet.bec_voltage;
+    onr_power.battery_voltage     = packet.battery_voltage;
     onr_power.bec_current         = packet.bec_current;
+    onr_power.bec_voltage         = packet.bec_voltage;
     onr_power.none2               = packet.none2;
     onr_power.none3               = packet.none3;
 }
