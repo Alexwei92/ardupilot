@@ -67,8 +67,8 @@
 //#define USERHOOK_SUPERSLOWLOOP userhook_SuperSlowLoop();  // for code to be run at 1hz
 #define USERHOOK_AUXSWITCH ENABLED                        // for code to handle user aux switches
 
+//Customized Code
 // ONR
-#define SIM_ONR DISABLED            // for code to simulate ONR sensor readings
 #define ONR_DATAFLASH ENABLED      // for code to enable ONR sensor reading Dataflash
 
 // SYSID
@@ -78,3 +78,4 @@
 
 #define SWEEP_DATAFLASH ENABLED     // for code to enable system id signal Dataflash at 100hz
 #define MAVLINK_SYSID ENABLED       // send system id data via mavlink in EXTRA3
+//End of customized code
