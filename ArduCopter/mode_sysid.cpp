@@ -129,10 +129,11 @@ void Copter::ModeSystemID::run_frequency_sweep(const freq_setting my_settings)
     uint8_t _T_fadein = my_settings.T_fadein;
     uint8_t _T_fadeout = my_settings.T_fadeout;
     uint8_t _T_total = my_settings.T_total;
+    uint8_t _T_N = my_settings.T_N;
     float _T_wmin = (2.0f*MY_PI*my_settings.F_min);
     float _T_wmax = (2.0f*MY_PI*my_settings.F_max);
     float _T_tmin = (1.0f/my_settings.F_min);
-    float _T_active = _T_total - _T_tmin;
+    float _T_active = _T_total - _T_tmin*_T_N;
     
     copter.my_last_time = my_current_time;  // remember time when last run called
     float _A = my_settings.A_min + copter.sweep.amplitude*(my_settings.A_max-my_settings.A_min);
@@ -157,10 +158,10 @@ void Copter::ModeSystemID::run_frequency_sweep(const freq_setting my_settings)
     }
 
     // else do the frequency sweep
-    if (my_period < (_T_trimin+_T_tmin)*S_2_MILLIS) {
+    if (my_period < (_T_trimin+_T_tmin*_T_N)*S_2_MILLIS) {
         copter.my_theta += _T_wmin*(my_dt*1e-3f);
     } else {
-        my_K = MY_C2*(expf(MY_C1*(my_period*1e-3f-_T_tmin-_T_trimin)/_T_active)-1.0f);
+        my_K = MY_C2*(expf(MY_C1*(my_period*1e-3f-_T_tmin*_T_N-_T_trimin)/_T_active)-1.0f);
         copter.my_theta += (_T_wmin + my_K*(_T_wmax-_T_wmin))*(my_dt*1e-3f);
     }
     my_delta = _A*sinf(copter.my_theta);

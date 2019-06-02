@@ -43,6 +43,7 @@ struct freq_setting {
     uint8_t T_trimin;
     uint8_t T_trimout;
     uint8_t T_total;
+    uint8_t T_N;
     float F_min;
     float F_max;
     float A_min;
@@ -58,11 +59,11 @@ struct doub_setting {
 
 sweep_monitor sweep;
 
-// follow this format             = {T_fadein, T_fadeout, T_trimin, T_trimout, T_total,  F_min,  F_max,  A_min,  A_max}
-const freq_setting sweep_roll     = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.4f}; //0.4
-const freq_setting sweep_pitch    = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.4f}; //0.5
-const freq_setting sweep_yaw      = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.3f};//0.38
-const freq_setting sweep_throttle = {10,       2,         2,        2,         30,       0.1f,   10.0f,  0.0f,   0.4f}; //0.5
+// follow this format             = {T_fadein, T_fadeout, T_trimin, T_trimout, T_total, T_N, F_min,  F_max,  A_min,  A_max}
+const freq_setting sweep_roll     = {10,       2,         2,        2,         50,      1,   0.1f,   10.0f,  0.0f,   0.4f}; //0.4
+const freq_setting sweep_pitch    = {10,       2,         2,        2,         50,      1,   0.1f,   10.0f,  0.0f,   0.4f}; //0.5
+const freq_setting sweep_yaw      = {10,       2,         2,        2,         50,      1,   0.1f,   10.0f,  0.0f,   0.3f}; //0.38
+const freq_setting sweep_throttle = {10,       2,         2,        2,         50,      1,   0.1f,   10.0f,  0.0f,   0.4f}; //0.5
 
 // follow this format               = {T_trimin, T_trimout, T_pulse, A_max}
 const doub_setting doublet_roll     = {1,        2,         1,       0.4f};
@@ -79,7 +80,7 @@ float tmp1 = 0.0f;
 float tmp2 = 0.0f;
 float tmp3 = 0.0f;
 
-
+// structure for ONR data logging
 struct ONR_RPM {
     uint32_t rpm1;
     uint32_t rpm2;
