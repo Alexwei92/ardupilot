@@ -1249,6 +1249,20 @@ void GCS_MAVLINK_Copter::handleMessage(const mavlink_message_t &msg)
         copter.g2.toy_mode.handle_message(msg);
         break;
 #endif
+
+#if ONR_DATAFLASH == ENABLED
+    case MAVLINK_MSG_ID_ONR_RPM_SENSOR:
+    {
+        copter.handle_onr_rpm_msg(msg);
+        break;
+    }
+
+    case MAVLINK_MSG_ID_ONR_POWER_SENSOR:
+    {
+        copter.handle_onr_power_msg(msg);
+        break;
+    }
+#endif
         
     default:
         handle_common_message(msg);

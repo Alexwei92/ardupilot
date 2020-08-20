@@ -170,6 +170,8 @@ enum LoggingParameters {
      LOG_GUIDEDTARGET_MSG,
      LOG_SYSIDD_MSG,
      LOG_SYSIDS_MSG,
+     LOG_ONRRPM_MSG,
+     LOG_ONRPOWER_MSG, 
 };
 
 // Harmonic notch update mode

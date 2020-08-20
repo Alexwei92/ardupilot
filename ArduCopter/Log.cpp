@@ -454,6 +454,70 @@ void Copter::Log_Write_GuidedTarget(uint8_t target_type, const Vector3f& pos_tar
     logger.WriteBlock(&pkt, sizeof(pkt));
 }
 
+// ONR sensor logging
+struct PACKED log_ONRRPM {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    uint32_t rpm1;
+    uint32_t rpm2;
+    uint32_t rpm3;
+    uint32_t rpm4;
+    uint32_t rpm5;
+    uint32_t rpm6;
+    uint32_t rpm7;
+    uint32_t rpm8;
+};
+
+struct PACKED log_ONRPOWER {
+    LOG_PACKET_HEADER;
+    uint64_t time_us;
+    uint32_t none1;
+    uint32_t battery_temperature;
+    uint32_t battery_current;
+    uint32_t battery_voltage;
+    uint32_t bec_current;
+    uint32_t bec_voltage;
+    uint32_t none2;
+    uint32_t none3;
+};
+
+#if ONR_DATAFLASH == ENABLED
+// Write an ONR sensor packet
+void Copter::Log_Write_ONRRPM()
+{
+    struct log_ONRRPM pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_ONRRPM_MSG),
+        time_us    : AP_HAL::micros64(),
+        rpm1       : (uint32_t)copter.onr_rpm.rpm1,
+        rpm2       : (uint32_t)copter.onr_rpm.rpm2,
+        rpm3       : (uint32_t)copter.onr_rpm.rpm3,
+        rpm4       : (uint32_t)copter.onr_rpm.rpm4,
+        rpm5       : (uint32_t)copter.onr_rpm.rpm5,
+        rpm6       : (uint32_t)copter.onr_rpm.rpm6,
+        rpm7       : (uint32_t)copter.onr_rpm.rpm7,
+        rpm8       : (uint32_t)copter.onr_rpm.rpm8,
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+
+void Copter::Log_Write_ONRPOWER()
+{
+    struct log_ONRPOWER pkt = {
+        LOG_PACKET_HEADER_INIT(LOG_ONRPOWER_MSG),
+        time_us               : AP_HAL::micros64(),
+        none1                 : (uint32_t)copter.onr_power.none1,
+        battery_temperature   : (uint32_t)copter.onr_power.battery_temperature,
+        battery_current       : (uint32_t)copter.onr_power.battery_current,
+        battery_voltage       : (uint32_t)copter.onr_power.battery_voltage,
+        bec_current           : (uint32_t)copter.onr_power.bec_current,
+        bec_voltage           : (uint32_t)copter.onr_power.bec_voltage,
+        none2                 : (uint32_t)copter.onr_power.none2,
+        none3                 : (uint32_t)copter.onr_power.none3,
+    };
+    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+}
+#endif
+
 // type and unit information can be found in
 // libraries/AP_Logger/Logstructure.h; search for "log_Units" for
 // units and "Format characters" for field type information
@@ -489,6 +553,12 @@ const struct LogStructure Copter::log_structure[] = {
       "SIDS", "QBfffffff",  "TimeUS,Ax,Mag,FSt,FSp,TFin,TC,TR,TFout", "s--ssssss", "F--------" },
     { LOG_GUIDEDTARGET_MSG, sizeof(log_GuidedTarget),
       "GUID",  "QBffffff",    "TimeUS,Type,pX,pY,pZ,vX,vY,vZ", "s-mmmnnn", "F-000000" },
+#if ONR_DATAFLASH == ENABLED
+    { LOG_ONRRPM_MSG, sizeof(log_ONRRPM), 
+      "ONR1", "QIIIIIIII", "TimeUS,rpm1,rpm2,rpm3,rpm4,rpm5,rpm6,rpm7,rpm8", "s--------", "F--------"},
+    { LOG_ONRPOWER_MSG, sizeof(log_ONRPOWER), 
+      "ONR2", "QIIIIIIII", "TimeUS,none1,batT,batI,batV,becI,becV,none2,none3", "s--------", "F--------"},
+#endif          
 };
 
 void Copter::Log_Write_Vehicle_Startup_Messages()
