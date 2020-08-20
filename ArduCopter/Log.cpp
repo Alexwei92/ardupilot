@@ -497,7 +497,7 @@ void Copter::Log_Write_ONRRPM()
         rpm7       : (uint32_t)copter.onr_rpm.rpm7,
         rpm8       : (uint32_t)copter.onr_rpm.rpm8,
     };
-    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+    logger.WriteBlock(&pkt, sizeof(pkt));
 }
 
 void Copter::Log_Write_ONRPOWER()
@@ -514,7 +514,7 @@ void Copter::Log_Write_ONRPOWER()
         none2                 : (uint32_t)copter.onr_power.none2,
         none3                 : (uint32_t)copter.onr_power.none3,
     };
-    DataFlash.WriteBlock(&pkt, sizeof(pkt));
+    logger.WriteBlock(&pkt, sizeof(pkt));
 }
 #endif
 

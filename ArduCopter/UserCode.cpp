@@ -81,10 +81,11 @@ void Copter::userhook_auxSwitch3(uint8_t ch_flag)
 }
 #endif
 
-void Copter::handle_onr_rpm_msg(const mavlink_message_t* msg)
+#ifdef ONR_DATAFLASH
+void Copter::handle_onr_rpm_msg(const mavlink_message_t &msg)
 {
     __mavlink_onr_rpm_sensor_t packet;
-    mavlink_msg_onr_rpm_sensor_decode(msg, &packet);
+    mavlink_msg_onr_rpm_sensor_decode(&msg, &packet);
     onr_rpm.rpm1 = packet.rpm1;
     onr_rpm.rpm2 = packet.rpm2;
     onr_rpm.rpm3 = packet.rpm3;
@@ -95,10 +96,10 @@ void Copter::handle_onr_rpm_msg(const mavlink_message_t* msg)
     onr_rpm.rpm8 = packet.rpm8;
 }
 
-void Copter::handle_onr_power_msg(const mavlink_message_t* msg)
+void Copter::handle_onr_power_msg(const mavlink_message_t &msg)
 {
     __mavlink_onr_power_sensor_t packet;
-    mavlink_msg_onr_power_sensor_decode(msg, &packet);
+    mavlink_msg_onr_power_sensor_decode(&msg, &packet);
     onr_power.none1               = packet.none1;
     onr_power.battery_temperature = packet.battery_temperature;
     onr_power.battery_current     = packet.battery_current;
@@ -108,3 +109,4 @@ void Copter::handle_onr_power_msg(const mavlink_message_t* msg)
     onr_power.none2               = packet.none2;
     onr_power.none3               = packet.none3;
 } 
+#endif

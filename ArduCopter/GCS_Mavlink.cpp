@@ -1259,7 +1259,7 @@ void GCS_MAVLINK_Copter::handleMessage(const mavlink_message_t &msg)
 
     case MAVLINK_MSG_ID_ONR_POWER_SENSOR:
     {
-        copter.handle_onr_power_msg(msg);
+        // copter.handle_onr_power_msg(msg);
         break;
     }
 #endif
