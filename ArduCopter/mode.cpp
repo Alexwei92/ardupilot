@@ -171,6 +171,10 @@ Mode *Copter::mode_from_mode_num(const Mode::Number mode)
             break;
 #endif
 
+        case Mode::Number::NEPTUNE:
+            ret = &mode_neptune;
+            break;
+
         default:
             break;
     }

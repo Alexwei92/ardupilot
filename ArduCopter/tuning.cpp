@@ -233,5 +233,9 @@ void Copter::tuning()
          copter.mode_systemid.set_magnitude(tuning_value);
 #endif
          break;
+
+     case TUNING_FORWARD_SPEED:
+         copter.mode_neptune.set_forward_speed(tuning_value);
+         break;
     }
 }

@@ -36,6 +36,7 @@ public:
         ZIGZAG    =    24,  // ZIGZAG mode is able to fly in a zigzag manner with predefined point A and point B
         SYSTEMID  =    25,  // System ID mode produces automated system identification signals in the controllers
         AUTOROTATE =   26,  // Autonomous autorotation
+        NEPTUNE =      27,  // Custom flight mode to lock pitch and yaw and set a constant velocity
     };
 
     // constructor
@@ -1469,3 +1470,32 @@ private:
 
 };
 #endif
+
+class ModeNeptune : public Mode {
+
+public:
+    //inherit constructor
+    using Mode::Mode;
+
+    bool init(bool ignore_checks) override;
+    void run() override;
+
+    bool requires_GPS() const override { return true; }
+    bool has_manual_throttle() const override { return false; }
+    bool allows_arming(bool from_gcs) const override { return false; }
+    bool is_autopilot() const override { return false; }
+    //bool logs_attitude() const override { return true; }
+    void set_forward_speed(float input) { forward_speed = input; }
+
+    //TODO: log data
+    //static const struct AP_Param::GroupInfo var_info[];
+
+protected:
+
+    const char *name() const override { return "NEPTUNED"; }
+    const char *name4() const override { return "NEPD"; }
+
+private:
+    //void log_data();
+    AP_Float forward_speed; // forward speed in cm/s
+};

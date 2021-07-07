@@ -236,6 +236,7 @@ public:
     friend class ModeThrow;
     friend class ModeZigZag;
     friend class ModeAutorotate;
+    friend class ModeNeptune;
 
     Copter(void);
 
@@ -993,6 +994,8 @@ private:
 #if MODE_AUTOROTATE_ENABLED == ENABLED
     ModeAutorotate mode_autorotate;
 #endif
+    // Custom Flight Mode
+    ModeNeptune mode_neptune;
 
     // mode.cpp
     Mode *mode_from_mode_num(const Mode::Number mode);
